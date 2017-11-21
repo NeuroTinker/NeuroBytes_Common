@@ -139,29 +139,6 @@ bool processDataMessage(read_buffer_t * read_buffer_ptr)
     return false;
 }
 
-// Unused
-bool processSelectedCommand(read_buffer_t * read_buffer_ptr)
-{
-    channel = read_buffer_ptr->message & 0b111;
-    header = (read_buffer_ptr->message >> 3) & 0b111111;
-
-    switch (header){
-        case SET_FLAG_COMMAND:
-            read_buffer_ptr->bits_left_to_read = 5;
-            read_buffer_ptr->callback = processFlagCommand;
-            return true;
-            break;
-        case SET_PARAMETER_COMMAND:
-            read_buffer_ptr->bits_left_to_read = 21;
-            read_buffer_ptr->callback = processParameterCommand;
-            return true;
-            break;
-        default:
-            break;
-    }
-    return false;
-}
-
 bool processParameterCommand(read_buffer_t * read_buffer_ptr)
 {
     const message_t frwd_message = {.length=28, .message=read_buffer_ptr->message};
