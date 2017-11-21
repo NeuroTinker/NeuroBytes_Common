@@ -20,6 +20,7 @@
 #define BLINK_HEADER                0b1001
 #define NID_PING_HEADER             0b1110
 #define NID_GLOBAL_HEADER           0b1100
+#define NID_SELECTED_HEADER         0b1101
 #define DATA_HEADER                 0b1010
 
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
@@ -48,8 +49,8 @@
     0b001  -   Blink (Debug)
     0b010  -   Data to NID (6-bit data header + 16-bit data packet + 3-bit parity check)
     0b011  -   Downstream Ping
-    0b100  -   NID Selected Command 
-    0b101  -   NID Global Command 
+    0b100  -   NID Global Command 
+    0b101  -   NID Selected Command 
     0b110  -   NID Ping 
     0b111  -   Downstream Pulse
     There are three types of communication that are defined in this protocol:

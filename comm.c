@@ -139,6 +139,7 @@ bool processDataMessage(read_buffer_t * read_buffer_ptr)
     return false;
 }
 
+// Unused
 bool processSelectedCommand(read_buffer_t * read_buffer_ptr)
 {
     channel = read_buffer_ptr->message & 0b111;
