@@ -6,6 +6,8 @@ read_buffer_t read_buffer[NUM_INPUTS] = {
     [0 ... MAX_I] = { .message=0, .bits_left_to_read=4, .callback=processMessageHeader}
 }; // fast 'gcc' way to initialize the whole array of read_buffer_t struct
 
+volatile uint8_t comms_flag = 0;
+volatile uint16_t comms_data = 0;
 volatile uint8_t blink_flag = 0;
 volatile uint32_t nid_ping_time = 0;
 volatile uint16_t nid_pin = 0;
