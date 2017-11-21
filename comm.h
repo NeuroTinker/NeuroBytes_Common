@@ -44,9 +44,9 @@
     0b001  -   Blink (Debug)
     0b010  -   Data to NID (6-bit data header + 16-bit data packet + 3-bit parity check)
     0b011  -   Downstream Ping
-    0b100  -   NID Selected Command (6-bit command header + 16-bit data-packet + 3-bit parity check)
-    0b101  -   NID Global Command (6-bit command header + 1-bit parity check)
-    0b110  -   NID Ping (6-bit data + 1-bit parity check)
+    0b100  -   NID Selected Command 
+    0b101  -   NID Global Command 
+    0b110  -   NID Ping 
     0b111  -   Downstream Pulse
     There are three types of communication that are defined in this protocol:
     
@@ -164,7 +164,7 @@ bool processMessageHeader(read_buffer_t * read_buffer_ptr);
 bool processNIDPing(read_buffer_t * read_buffer_ptr);
 bool processGlobalCommand(read_buffer_t * read_buffer_ptr);
 bool processDataMessage(read_buffer_t * read_buffer_ptr);
-bool processIdentifyCommand(read_buffer_t * readb_buffer_ptr);
+bool processIdentifyCommand(read_buffer_t * read_buffer_ptr);
 
 // received message handlers
 void receivePulse(uint32_t message);

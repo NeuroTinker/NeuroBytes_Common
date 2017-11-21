@@ -359,9 +359,9 @@ void writeNID(void)
 {
     uint32_t value;
     if (nid_port_out == LPUART1){
-        value = write_buffer.nid[0].message & (0xFF << 0x18);
-        value >>= 0x18;
-        write_buffer.nid[0].message <<= 0x8;
+        value = write_buffer.nid[0].message & (0xFF << 24);
+        value >>= 24;
+        write_buffer.nid[0].message <<= 8;
         write_buffer.write_count += 8; // lpuart writes 8 bits at a time instead of 1 bit
         writeNIDByte(value);
     } else{
