@@ -156,6 +156,7 @@ extern volatile uint8_t closer_distance;
 
 extern volatile uint16_t identify_time;
 extern uint8_t identify_channel;
+extern uint8_t nid_channel;
 
 void readBit(uint8_t read_tick); // The readInputs() function reads the next bit for active inputs
 
@@ -169,13 +170,6 @@ bool processNIDPing(read_buffer_t * read_buffer_ptr);
 bool processGlobalCommand(read_buffer_t * read_buffer_ptr);
 bool processDataMessage(read_buffer_t * read_buffer_ptr);
 bool processIdentifyCommand(read_buffer_t * read_buffer_ptr);
-
-// received message handlers
-void receivePulse(uint32_t message);
-void receiveUpstreamKeepAlive(uint32_t message, uint16_t pin);
-void receiveUpstreamPulse(uint32_t message, uint16_t pin);
-void receiveNIDKeepAlive(uint32_t message, uint16_t pin);
-void receiveNIDBlink(void);
 
 void addWrite(message_buffers_t buffer, const message_t message);
 void commInit(void);

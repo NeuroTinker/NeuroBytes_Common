@@ -17,6 +17,8 @@ volatile uint8_t  nid_distance = 100; // max uint8_t
 volatile uint8_t closer_ping_count = 0;
 volatile uint8_t closer_distance = 100;
 
+volatile uint8_t nid_channel = 0;
+
 const message_t pulse_message = {.length=4, .message=PULSE_HEADER};
 const message_t downstream_ping_message = {.length=4, .message=DOWNSTREAM_PING_HEADER};
 const message_t blink_message = {.length=4, .message=BLINK_HEADER};
@@ -114,6 +116,11 @@ bool processMessageHeader(read_buffer_t * read_buffer_ptr)
                 return true;
             }
             break;
+        case NID_SELECTED_HEADER:
+            if (i == nid_i){
+                read_buffer_ptr->bits_left_to_read = 3; // read the channel that's being selected
+                read_buffer_ptr->callback = processSelectedCommand;
+            }
         case DATA_HEADER:
             read_buffer_ptr->bits_left_to_read = 28;
             read_buffer_ptr->callback = processDataMessage;
@@ -131,6 +138,24 @@ bool processDataMessage(read_buffer_t * read_buffer_ptr)
     addWrite(NID_BUFF, frwd_message);
     return false;
 }
+
+bool processSelectedCommand(read_buffer_t * read_buffer_ptr)
+{
+    const message_t frwd_message = {.length=28, .message=read_buffer_ptr->message};
+    addWrite(ALL_BUFF, frwd_message);
+    
+    uint8_t channel = (read_buffer_ptr->message >> 21) & 0b111;
+    uint8_t parameter = (read_buffer_ptr->message >> 16) & 0b11111;
+    uint16_t value = read_buffer_ptr->message & 0xFFFF;
+
+    if (channel == nid_channel){
+        comms_flag = parameter;
+        comms_value = value;
+    }
+
+    return false;
+}
+
 
 bool processGlobalCommand(read_buffer_t * read_buffer_ptr)
 {
