@@ -25,10 +25,10 @@
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
 #define DATA_MESSAGE                0b10100000000000000000000000000000 // (NID) (KEEP ALIVE=0) (CHANNEL= NONE) (DATA) (no data)
 
-#define IDENTIFY_COMMAND            0b000001
-#define VERSION_COMMAND             0b000010
-#define SET_FLAG_COMMAND            0b000011
-#define SET_PARAMETER_COMMAND       0b000100
+#define IDENTIFY_COMMAND            0b0001
+#define VERSION_COMMAND             0b0010
+#define SET_FLAG_COMMAND            0b0011
+#define SET_PARAMETER_COMMAND       0b0100
 
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
@@ -170,6 +170,8 @@ bool processNIDPing(read_buffer_t * read_buffer_ptr);
 bool processGlobalCommand(read_buffer_t * read_buffer_ptr);
 bool processDataMessage(read_buffer_t * read_buffer_ptr);
 bool processIdentifyCommand(read_buffer_t * read_buffer_ptr);
+bool processSelectedCommand(read_buffer_t * read_buffer_ptr);
+bool processParameterCommand(read_buffer_t * read_buffer_ptr);
 
 void addWrite(message_buffers_t buffer, const message_t message);
 void commInit(void);

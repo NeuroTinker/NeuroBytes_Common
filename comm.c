@@ -118,8 +118,8 @@ bool processMessageHeader(read_buffer_t * read_buffer_ptr)
             break;
         case NID_SELECTED_HEADER:
             if (i == nid_i){
-                read_buffer_ptr->bits_left_to_read = 3; // read the channel that's being selected
-                read_buffer_ptr->callback = processSelectedCommand;
+                read_buffer_ptr->bits_left_to_read = 24; // read the channel that's being selected and the command
+                read_buffer_ptr->callback = processParameterCommand;
             }
         case DATA_HEADER:
             read_buffer_ptr->bits_left_to_read = 28;
@@ -141,8 +141,29 @@ bool processDataMessage(read_buffer_t * read_buffer_ptr)
 
 bool processSelectedCommand(read_buffer_t * read_buffer_ptr)
 {
+    channel = read_buffer_ptr->message & 0b111;
+    header = (read_buffer_ptr->message >> 3) & 0b111111;
+
+    switch (header){
+        case SET_FLAG_COMMAND:
+            read_buffer_ptr->bits_left_to_read = 5;
+            read_buffer_ptr->callback = processFlagCommand;
+            return true;
+            break;
+        case SET_PARAMETER_COMMAND:
+            read_buffer_ptr->bits_left_to_read = 21;
+            read_buffer_ptr->callback = processParameterCommand;
+            return true;
+            break;
+        default:
+            break;
+    }
+    return false;
+}
+
+bool processParameterCommand(read_buffer_t * read_buffer_ptr)
+{
     const message_t frwd_message = {.length=28, .message=read_buffer_ptr->message};
-    addWrite(ALL_BUFF, frwd_message);
     
     uint8_t channel = (read_buffer_ptr->message >> 21) & 0b111;
     uint8_t parameter = (read_buffer_ptr->message >> 16) & 0b11111;
@@ -151,11 +172,10 @@ bool processSelectedCommand(read_buffer_t * read_buffer_ptr)
     if (channel == nid_channel){
         comms_flag = parameter;
         comms_value = value;
+    } else{
+        addWrite(ALL_BUFF, frwd_message);
     }
-
-    return false;
 }
-
 
 bool processGlobalCommand(read_buffer_t * read_buffer_ptr)
 {
