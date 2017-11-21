@@ -11,7 +11,6 @@
 #include "HAL.h"
 
 #define MAX_I                   NUM_INPUTS - 1
-#define COMPLIMENTARY_I(i)  i + (i % 2) - ((i+1) % 2)
 #define DEND_PING_TIME		200 // 1000 ms
 #define	NID_PING_TIME		200 // 1000 ms
 #define NID_PING_KEEP_ALIVE     32
