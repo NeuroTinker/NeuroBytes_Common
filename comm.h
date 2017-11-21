@@ -173,6 +173,7 @@ bool processDataMessage(read_buffer_t * read_buffer_ptr);
 bool processIdentifyCommand(read_buffer_t * read_buffer_ptr);
 bool processSelectedCommand(read_buffer_t * read_buffer_ptr);
 bool processParameterCommand(read_buffer_t * read_buffer_ptr);
+bool processVersionCommand(read_buffer_t * read_buffer_ptr);
 
 void addWrite(message_buffers_t buffer, const message_t message);
 void commInit(void);

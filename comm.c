@@ -149,7 +149,7 @@ bool processParameterCommand(read_buffer_t * read_buffer_ptr)
 
     if (channel == nid_channel){
         comms_flag = parameter;
-        comms_value = value;
+        comms_data = value;
     } else{
         addWrite(ALL_BUFF, frwd_message);
     }
@@ -185,7 +185,7 @@ bool processVersionCommand(read_buffer_t * read_buffer_ptr)
     uint8_t device_id = (read_buffer_ptr->message >> 8) & 0b11111;
     uint8_t version = read_buffer_ptr->message & 0b11111111;
 
-    checkVersion(device_id, version) ? : blink_flag = 1;
+    blink_flag = checkVersion(device_id, version) ? : 1;
     
     return false;
 }
