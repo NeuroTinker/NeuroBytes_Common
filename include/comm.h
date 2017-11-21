@@ -23,11 +23,14 @@
 #define NID_PING_HEADER             0b1110
 #define NID_GLOBAL_HEADER           0b1100
 #define DATA_HEADER                 0b1010
+#define NID_SELECTED_HEADER         0b1100
 
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
 #define DATA_MESSAGE                0b10101000000000000000000000000000 // (NID) (KEEP ALIVE=0) (CHANNEL= NONE) (DATA) (no data)
 
 #define IDENTIFY_COMMAND            0b000001
+#define VERSION_COMMAND             0b000010
+
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
 #define IDENTIFY_TIME       500 // 250 ms
@@ -58,31 +61,37 @@
     
         Messages include nid pings and identify device request. The NID commands class of messsages
         
-        List of message classes:
-        -{MESSAGE CLASS}
-            -{MESSAGE 1}
-            -{MESSAGE 2}
-                -{DATA FRAME}
-            -...
+        List of message headers:
 
-        -NID_PING_CLASS
-            -NID_PING
-                -8-bit pass count
+        -NID_PING_HEADER
+            +read 6-bit distance counter
+                -processNIDPING
 
-            6-bit   -   number of devices passed
-            1-bit   -   parity check
+        -NID_GLOBAL_HEADER
+            +read 6-bit command header
+                -IDENTIFY_COMMAND
+                    +read 3-bit channel
+                        -processIdentifyCommand
+                -VERSION_COMMAND
+                    +read 5-bit device id
+                        -device id match
+                            +read 8-bit version
+                                -processVersionCommand
+                -RESUME_COMMAND
+                    -set run_flag
+                -PAUSE_COMMAND
+                    -clear run_flag
+        -NID_SELECTED_HEADER
+            -SET_FLAG_COMMAND
+                +read 3-bit flag
+                    -processFlagCommand
+            -SET_PARAMETER_COMMAND
+                +read 20-bit packet (4-bit parameter id + 16-bit value)
+                    -processParameterCommand
 
-        -NID_GLOBAL_COMMAND_CLASS
-            -IDENTIFY_DEVICE
-            -ALL_START_LEARNING_MODE
-            -ALL_STOP_LEARNING_MODE
-            -ALL_PAUSE
+        -BLINK_HEADER
+            -set blink_flag
 
-            6-bit   -   command header
-            16-bit  -   data packet
-            3-bit   -   parity check
-
-        
 
     2. Selected neurons sending data to the NID.
 
