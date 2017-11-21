@@ -157,7 +157,7 @@ extern volatile uint8_t closer_distance;
 
 extern volatile uint16_t identify_time;
 extern uint8_t identify_channel;
-extern uint8_t nid_channel;
+extern volatile uint8_t nid_channel;
 
 void readBit(uint8_t read_tick); // The readInputs() function reads the next bit for active inputs
 
