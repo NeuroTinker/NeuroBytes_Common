@@ -142,11 +142,28 @@ bool processGlobalCommand(read_buffer_t * read_buffer_ptr)
             read_buffer_ptr->callback = processIdentifyCommand;
             return true;
             break;
+        case VERSION_COMMAND:
+            read_buffer_ptr->bits_left_to_read = 13; // read 5-bit device id + 8-bit version
+            read_buffer_ptr->callback = processVersionCommand;
+            return true;
         default:
             break;
     }
     const message_t frwd_message = {.length=10, .message=read_buffer_ptr->message};
     addWrite(ALL_BUFF, frwd_message);
+    return false;
+}
+
+bool processVersionCommand(read_buffer_t * read_buffer_ptr)
+{
+    const message_t frwd_message = {.length=32, .message=read_buffer_ptr->message};
+    addWrite(ALL_BUFF, frwd_message);
+
+    uint8_t device_id = (read_buffer_ptr->message >> 8) & 0b11111;
+    uint8_t version = read_buffer_ptr->message & 0b11111111;
+
+    checkVersion(device_id, version) ? : blink_flag = 1;
+    
     return false;
 }
 

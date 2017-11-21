@@ -39,7 +39,6 @@
 
 /*
     This and comm.c define all communication protocol
-
     message headers:
     0b000  -   Unused
     0b001  -   Blink (Debug)
@@ -49,43 +48,44 @@
     0b101  -   NID Global Command (6-bit command header + 1-bit parity check)
     0b110  -   NID Ping (6-bit data + 1-bit parity check)
     0b111  -   Downstream Pulse
-
     There are three types of communication that are defined in this protocol:
     
     1. Network Interface Device (NID) broadcasting to all neurons in the network. 
     
         Messages include nid pings and identify device request. The NID commands class of messsages
         
-        List of message classes:
-        -{MESSAGE CLASS}
-            -{MESSAGE 1}
-            -{MESSAGE 2}
-                -{DATA FRAME}
-            -...
-
-        -NID_PING_CLASS
-            -NID_PING
-                -8-bit pass count
-
-            6-bit   -   number of devices passed
-            1-bit   -   parity check
-
-        -NID_GLOBAL_COMMAND_CLASS
-            -IDENTIFY_DEVICE
-            -ALL_START_LEARNING_MODE
-            -ALL_STOP_LEARNING_MODE
-            -ALL_PAUSE
-
-            6-bit   -   command header
-            16-bit  -   data packet
-            3-bit   -   parity check
-
-        
-
+        List of message headers:
+        -NID_PING_HEADER
+            +read 6-bit distance counter
+                -processNIDPING
+        -NID_GLOBAL_HEADER
+            +read 6-bit command header
+                -IDENTIFY_COMMAND
+                    +read 3-bit channel
+                        -processIdentifyCommand
+                -VERSION_COMMAND
+                    +read 13-bit packet (5-bit device id + 8-bit version)
+                        -processVersionCommand
+                -RESUME_COMMAND
+                    -set run_flag
+                -PAUSE_COMMAND
+                    -clear run_flag
+        -NID_SELECTED_HEADER
+            -SET_FLAG_COMMAND
+                +read 3-bit flag
+                    -processFlagCommand
+            -SET_PARAMETER_COMMAND
+                +read 20-bit packet (4-bit parameter id + 16-bit value)
+                    -processParameterCommand
+        -BLINK_HEADER
+            -set blink_flag
+            
     2. Selected neurons sending data to the NID.
 
     3. Upstream neurons sending pulses to downstream neurons (axon -> dendrite).
+
 */
+
 
 typedef struct{
     uint8_t length;
@@ -138,6 +138,8 @@ extern uint8_t nid_i;
 
 // flags for main()
 extern volatile uint8_t blink_flag;
+extern volatile uint8_t comms_flag;
+extern volatile uint16_t comms_data;
 
 extern volatile uint32_t nid_ping_time;
 extern volatile uint8_t nid_distance;
