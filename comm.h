@@ -113,8 +113,8 @@ typedef enum{
 
 typedef enum{
     CURRENT     =   0b0001,
-    DEND1       =   0b0011,
-    DEND2       =   0b0010,
+    DEND1       =   0b0010,
+    DEND2       =   0b0011,
     DEND3       =   0b0100,
     DEND4       =   0b0101
 } parameter_identifiers;

@@ -150,6 +150,7 @@ bool processParameterCommand(read_buffer_t * read_buffer_ptr)
     uint16_t value = read_buffer_ptr->message & 0xFFFF;
 
     if (channel == nid_channel){
+        blink_flag = 1;
         comms_flag = parameter;
         comms_data = value;
     } else{
