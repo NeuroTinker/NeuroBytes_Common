@@ -1,26 +1,13 @@
 
 #include "comm.h"
-#include "HAL.h"
 
 write_buffer_t write_buffer;
 read_buffer_t read_buffer[NUM_INPUTS] = {
-    [0 ... 10] = { .message=0, .bits_left_to_read=4, .callback=processMessageHeader}
+    [0 ... MAX_I] = { .message=0, .bits_left_to_read=4, .callback=processMessageHeader}
 }; // fast 'gcc' way to initialize the whole array of read_buffer_t struct
 
-
-volatile uint16_t active_input_pins[NUM_INPUTS] = {[0 ... 10] = 0};
-
-volatile uint8_t active_input_tick[NUM_INPUTS] = {[0 ... 10] = 0};
-
-volatile uint16_t active_output_pins[NUM_INPUTS] = {PIN_AXON1_EX, PIN_AXON2_EX, PIN_AXON3_EX, [3 ... 10] = 0};
-
-volatile uint32_t dendrite_pulses[4] = {0,0,0,0};
-volatile uint8_t dendrite_pulse_count = 0;
-
 volatile uint8_t blink_flag = 0;
-
 volatile uint32_t nid_ping_time = 0;
-
 volatile uint16_t nid_pin = 0;
 uint32_t nid_port = 0;
 volatile uint16_t nid_pin_out = 0;
@@ -34,81 +21,6 @@ const message_t pulse_message = {.length=4, .message=PULSE_HEADER};
 const message_t downstream_ping_message = {.length=4, .message=DOWNSTREAM_PING_HEADER};
 const message_t blink_message = {.length=4, .message=BLINK_HEADER};
 
-
-/* 
-All available input pins are:
-
-PIN_AXON1_IN,
-PIN_AXON2_IN,
-PIN_DEND1_EX,
-PIN_DEND1_IN, 
-PIN_DEND2_EX,
-PIN_DEND2_IN,
-PIN_DEND3_EX,
-PIN_DEND3_IN,
-PIN_DEND4_EX,
-PIN_DEND4_IN
-    
-*/
-
-uint32_t active_input_ports[NUM_INPUTS] = {
-    PORT_AXON1_IN,
-    PORT_AXON2_IN,
-    PORT_AXON3_IN,
-    PORT_DEND1_EX,
-    PORT_DEND1_IN,
-    PORT_DEND2_EX,
-    PORT_DEND2_IN,
-    PORT_DEND3_EX,
-    PORT_DEND3_IN,
-    PORT_DEND4_EX,
-    PORT_DEND4_IN
-};
-
-uint32_t active_output_ports[NUM_INPUTS] = {
-    PORT_AXON1_EX,
-    PORT_AXON2_EX,
-    PORT_AXON3_EX,
-    PORT_DEND1_EX,
-    PORT_DEND1_IN,
-    PORT_DEND2_EX,
-    PORT_DEND2_IN,
-    PORT_DEND3_EX,
-    PORT_DEND3_IN,
-    PORT_DEND4_EX,
-    PORT_DEND4_IN
-};
-
-const uint16_t complimentary_pins[NUM_INPUTS] = {
-    PIN_AXON1_EX,
-    PIN_AXON2_EX,
-    PIN_AXON3_EX,
-    PIN_DEND1_IN,
-    PIN_DEND1_EX,
-    PIN_DEND2_IN,
-    PIN_DEND2_EX,
-    PIN_DEND3_IN,
-    PIN_DEND3_EX,
-    PIN_DEND4_IN,
-    PIN_DEND4_EX
-};
-
-const uint32_t complimentary_ports[NUM_INPUTS] = {
-    PORT_AXON1_EX,
-    PORT_AXON2_EX,
-    PORT_AXON3_EX,
-    PORT_DEND1_IN,
-    PORT_DEND1_EX,
-    PORT_DEND2_IN,
-    PORT_DEND2_EX,
-    PORT_DEND3_IN,
-    PORT_DEND3_EX,
-    PORT_DEND4_IN,
-    PORT_DEND4_EX
-};
-
-volatile uint8_t dendrite_pulse_flag[NUM_INPUTS] = {[0 ... 10] = 0};
-volatile uint8_t dendrite_ping_flag[NUM_INPUTS] = {[0 ... 10] = 0};
 uint8_t write_count = 0;
 volatile uint16_t identify_time = IDENTIFY_TIME;
 uint8_t identify_channel = 0;
@@ -323,7 +235,7 @@ void writeBit(void)
         Pop 1-bit off the write_buffer and write it to corresponding output pins
     */
     uint8_t i;
-    if (write_buffer.write_count == write_buffer.num_bits_to_write){
+    if (write_buffer.write_count >= write_buffer.num_bits_to_write){
         // Message is done being written. Decrement the buffer that was read
         switch (write_buffer.current_buffer){
             case DOWNSTREAM_BUFF:
@@ -433,7 +345,7 @@ void writeNID(void)
         value = write_buffer.nid[0].message & (0xFF << 0x18);
         value >>= 0x18;
         write_buffer.nid[0].message <<= 0x8;
-        write_buffer.write_count += 7; // lpuart writes 8 bits at a time instead of 1 bit
+        write_buffer.write_count += 8; // lpuart writes 8 bits at a time instead of 1 bit
         writeNIDByte(value);
     } else{
         value = NEXT_BIT(write_buffer.nid[0]);

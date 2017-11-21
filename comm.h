@@ -9,20 +9,8 @@
 #include <libopencm3/stm32/exti.h>
 
 #include "HAL.h"
-/*
-    comm.h config macros:
-    
-    NUM_INPUTS          total number of configurable input pins
-    HAS_DENDS           ifdef then implement dendrite-specific functions
-    HAS_AXONS           ifdef then implement axon-specific functions
-    NUM_DENDS           number of dendrites
-    NUM_AXONS           number of axons
-    COMPLIMENTARY_I
 
-*/
-
-#define NUM_INPUTS 11
-#define NUM_AXONS   3
+#define MAX_I                   NUM_INPUTS - 1
 #define COMPLIMENTARY_I(i)  i + (i % 2) - ((i+1) % 2)
 #define DEND_PING_TIME		200 // 1000 ms
 #define	NID_PING_TIME		200 // 1000 ms
@@ -34,14 +22,11 @@
 #define NID_PING_HEADER             0b1110
 #define NID_GLOBAL_HEADER           0b1100
 #define DATA_HEADER                 0b1010
-#define NID_SELECTED_HEADER         0b1100
 
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
-#define DATA_MESSAGE                0b10101000000000000000000000000000 // (NID) (KEEP ALIVE=0) (CHANNEL= NONE) (DATA) (no data)
+#define DATA_MESSAGE                0b10100000000000000000000000000000 // (NID) (KEEP ALIVE=0) (CHANNEL= NONE) (DATA) (no data)
 
 #define IDENTIFY_COMMAND            0b000001
-#define VERSION_COMMAND             0b000010
-
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
 #define IDENTIFY_TIME       500 // 250 ms
@@ -70,39 +55,33 @@
     
     1. Network Interface Device (NID) broadcasting to all neurons in the network. 
     
-        Messages include nid pings and identify device request.
+        Messages include nid pings and identify device request. The NID commands class of messsages
         
-        List of message headers:
+        List of message classes:
+        -{MESSAGE CLASS}
+            -{MESSAGE 1}
+            -{MESSAGE 2}
+                -{DATA FRAME}
+            -...
 
-        -NID_PING_HEADER
-            +read 6-bit distance counter
-                -processNIDPING
+        -NID_PING_CLASS
+            -NID_PING
+                -8-bit pass count
 
-        -NID_GLOBAL_HEADER
-            +read 6-bit command header
-                -IDENTIFY_COMMAND
-                    +read 3-bit channel
-                        -processIdentifyCommand
-                -VERSION_COMMAND
-                    +read 5-bit device id
-                        -device id match
-                            +read 8-bit version
-                                -processVersionCommand
-                -RESUME_COMMAND
-                    -set run_flag
-                -PAUSE_COMMAND
-                    -clear run_flag
-        -NID_SELECTED_HEADER
-            -SET_FLAG_COMMAND
-                +read 3-bit flag
-                    -processFlagCommand
-            -SET_PARAMETER_COMMAND
-                +read 20-bit packet (4-bit parameter id + 16-bit value)
-                    -processParameterCommand
+            6-bit   -   number of devices passed
+            1-bit   -   parity check
 
-        -BLINK_HEADER
-            -set blink_flag
+        -NID_GLOBAL_COMMAND_CLASS
+            -IDENTIFY_DEVICE
+            -ALL_START_LEARNING_MODE
+            -ALL_STOP_LEARNING_MODE
+            -ALL_PAUSE
 
+            6-bit   -   command header
+            16-bit  -   data packet
+            3-bit   -   parity check
+
+        
 
     2. Selected neurons sending data to the NID.
 
@@ -156,20 +135,10 @@ typedef struct read_buffer_t{
     read_handler_t callback;
 } read_buffer_t;
 
-extern const uint16_t complimentary_pins[NUM_INPUTS];
-extern const uint32_t complimentary_ports[NUM_INPUTS];
-extern volatile uint16_t active_input_pins[NUM_INPUTS];
-extern uint32_t active_input_ports[NUM_INPUTS];
-extern volatile uint16_t active_output_pins[NUM_INPUTS];
-extern uint32_t active_output_ports[NUM_INPUTS];
-extern volatile uint8_t active_input_tick[NUM_INPUTS];
-
 extern uint8_t nid_i;
 
 // flags for main()
-extern volatile uint8_t dendrite_pulse_flag[NUM_INPUTS];
 extern volatile uint8_t blink_flag;
-extern volatile uint8_t dendrite_ping_flag[NUM_INPUTS];
 
 extern volatile uint32_t nid_ping_time;
 extern volatile uint8_t nid_distance;
