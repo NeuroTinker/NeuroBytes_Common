@@ -2,20 +2,6 @@
 #include "neuron.h"
 #include "comm.h"
 
-uint16_t input_pins[11] = {
-    PIN_AXON1_IN,
-	PIN_AXON2_IN,
-	PIN_AXON3_IN,
-	PIN_DEND1_EX,
-	PIN_DEND1_IN, 
-	PIN_DEND2_EX,
-	PIN_DEND2_IN,
-	PIN_DEND3_EX,
-	PIN_DEND3_IN,
-	PIN_DEND4_EX,
-	PIN_DEND4_IN
-};
-
 void neuronInit(neuron_t *n)
 {
 	uint8_t i;
