@@ -17,7 +17,7 @@ void neuronInit(neuron_t *n)
 
 	n->leaky_current = 0;
 
-	for (i=0;i<DENDRITE_COUNT;i++){
+	for (i=0;i<NUM_DENDS;i++){
 		n->dendrites[i].state = OFF;
 		n->dendrites[i].current_value = 0;
 		n->dendrites[i].type = EXCITATORY;
@@ -81,7 +81,7 @@ void checkDendrites(neuron_t * n)
 		}
 	}
 	
-	for (i=0; i < DENDRITE_COUNT; i++){
+	for (i=0; i < NUM_DENDS; i++){
 		// switch dendrite off when pulse has expired
 		if(n->dendrites[i].state == ON){
 			if (n->dendrites[i].pulse_time == 0)
@@ -100,7 +100,7 @@ void checkDendrites(neuron_t * n)
 void calcDendriteWeightings(neuron_t * n)
 {
 	uint8_t i;
-	for (i=0; i<DENDRITE_COUNT; i++){
+	for (i=0; i<NUM_DENDS; i++){
 		if (n->dendrites[i].timestamp < LEARNING_WINDOW){
 			n->dendrites[i].magnitude += (LEARNING_WINDOW - n->dendrites[i].timestamp) * LEARNING_CHANGE / LEARNING_WINDOW;
 			if (n->dendrites[i].magnitude > MAX_WEIGHTING)
@@ -122,7 +122,7 @@ void incrementHebbTime(neuron_t * n)
 
 	if (n->hebb_time == UINT16_MAX - 1){
 		n->hebb_time /= 2;
-		for (i=0; i<DENDRITE_COUNT; i++){
+		for (i=0; i<NUM_DENDS; i++){
 			n->dendrites[i].timestamp /= 2;
 		}
 		n->time_multiple *= 2;
@@ -148,7 +148,7 @@ void dendriteDecayStep(neuron_t * n)
 {
 	uint8_t i;
 
-	for(i=0; i<DENDRITE_COUNT; i++){
+	for(i=0; i<NUM_DENDS; i++){
 		n->dendrites[i].current_value = (n->dendrites[i].current_value * 63 ) / 64;
 	}
 }
@@ -162,7 +162,7 @@ int16_t calcNeuronPotential(neuron_t *n)
 {
 	uint8_t i;
 	int16_t new_v = 0;
-	for (i=0; i<DENDRITE_COUNT; i++){
+	for (i=0; i<NUM_DENDS; i++){
 		if (n->dendrites[i].state == ON){
 			switch(n->dendrites[i].type){
 				case EXCITATORY:
