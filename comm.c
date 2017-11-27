@@ -145,7 +145,7 @@ bool processParameterCommand(read_buffer_t * read_buffer_ptr)
 {
     const message_t frwd_message = {.length=28, .message=read_buffer_ptr->message};
     
-    uint8_t channel = (read_buffer_ptr->message >> 20) & 0b111;
+    uint8_t channel = (read_buffer_ptr->message >> 21) & 0b111;
     uint8_t parameter = (read_buffer_ptr->message >> 16) & 0b11111;
     uint16_t value = read_buffer_ptr->message & 0xFFFF;
 
