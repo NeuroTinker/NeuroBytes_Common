@@ -27,7 +27,7 @@ const message_t blink_message = {.length=4, .message=BLINK_HEADER};
 
 uint8_t write_count = 0;
 volatile uint16_t identify_time = IDENTIFY_TIME;
-uint8_t identify_channel = 0;
+uint8_t identify_channel = 1;
 
 void commInit(void)
 {
@@ -198,7 +198,7 @@ bool processVersionCommand(read_buffer_t * read_buffer_ptr)
 bool processIdentifyCommand(read_buffer_t * read_buffer_ptr)
 {
     identify_channel = read_buffer_ptr->message & 0b111;
-    identify_time = 0;
+    if (identify_time < IDENTIFY_TIME) identify_time = 0;
     const message_t frwd_message = {.length=13, .message=read_buffer_ptr->message};
     addWrite(ALL_BUFF, frwd_message);
     return false;
