@@ -198,7 +198,7 @@ bool processVersionCommand(read_buffer_t * read_buffer_ptr)
 bool processIdentifyCommand(read_buffer_t * read_buffer_ptr)
 {
     identify_channel = read_buffer_ptr->message & 0b111;
-    if (identify_time < IDENTIFY_TIME) identify_time = 0;
+    if (identify_time == IDENTIFY_TIME) identify_time = 0;
     const message_t frwd_message = {.length=13, .message=read_buffer_ptr->message};
     addWrite(ALL_BUFF, frwd_message);
     return false;
