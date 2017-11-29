@@ -32,7 +32,10 @@
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
 #define IDENTIFY_TIME       500 // 250 ms
-#define LPUART1_I 12
+#define LPUART1_I MAX_I + 1
+#define NO_NID_I MAX_I + 2
+
+#define NID_IS_CONNECTED    (nid_i != NO_NID_I)
 
 #define DOWNSTREAM_BUFFSIZE 3
 #define ALL_BUFFSIZE        5  
