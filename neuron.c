@@ -4,6 +4,7 @@
 
 void neuronInit(neuron_t *n)
 {
+	// This doesn't need to be a function. Init with gcc command
 	uint8_t i;
 
 	n->potential = 0;

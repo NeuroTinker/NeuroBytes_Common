@@ -26,10 +26,8 @@
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
 #define DATA_MESSAGE                0b10100000000000000000000000000000 // (NID) (KEEP ALIVE=0) (CHANNEL= NONE) (DATA) (no data)
 
-#define IDENTIFY_COMMAND            0b0001
-#define VERSION_COMMAND             0b0010
-#define SET_FLAG_COMMAND            0b0011
-#define SET_PARAMETER_COMMAND       0b0100
+#define IDENTIFY_COMMAND            0b000001
+#define VERSION_COMMAND             0b000010
 
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
@@ -76,11 +74,8 @@
                 -PAUSE_COMMAND
                     -clear run_flag
         -NID_SELECTED_HEADER
-            -SET_FLAG_COMMAND
-                +read 3-bit flag
-                    -processFlagCommand
-            -SET_PARAMETER_COMMAND
-                +read 20-bit packet (4-bit parameter id + 16-bit value)
+            +read 24-bit packet (3-bit channel + 5-bit parameter + 16-bit data)
+                -SET_PARAMETER_COMMAND
                     -processParameterCommand
         -BLINK_HEADER
             -set blink_flag
@@ -110,14 +105,6 @@ typedef enum{
     ALL_BUFF,
     NID_BUFF
 } message_buffers_t;
-
-typedef enum{
-    CURRENT     =   0b0001,
-    DEND1       =   0b0010,
-    DEND2       =   0b0011,
-    DEND3       =   0b0100,
-    DEND4       =   0b0101
-} parameter_identifiers;
 
 typedef struct{
     message_buffers_t   current_buffer;

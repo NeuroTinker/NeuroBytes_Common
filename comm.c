@@ -123,6 +123,8 @@ bool processMessageHeader(read_buffer_t * read_buffer_ptr)
                 read_buffer_ptr->bits_left_to_read = 24; // read the channel that's being selected and the command
                 read_buffer_ptr->callback = processParameterCommand;
             }
+            return true;
+            break;
         case DATA_HEADER:
             read_buffer_ptr->bits_left_to_read = 28;
             read_buffer_ptr->callback = processDataMessage;
@@ -153,9 +155,9 @@ bool processParameterCommand(read_buffer_t * read_buffer_ptr)
         blink_flag = 1;
         comms_flag = parameter;
         comms_data = value;
-    } else{
-        addWrite(ALL_BUFF, frwd_message);
-    }
+    } 
+
+    addWrite(ALL_BUFF, frwd_message);
 
     return false;
 }
