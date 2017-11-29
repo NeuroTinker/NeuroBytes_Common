@@ -122,8 +122,8 @@ bool processMessageHeader(read_buffer_t * read_buffer_ptr)
             if (i == nid_i){
                 read_buffer_ptr->bits_left_to_read = 24; // read the channel that's being selected and the command
                 read_buffer_ptr->callback = processParameterCommand;
+                return true;
             }
-            return true;
             break;
         case DATA_HEADER:
             read_buffer_ptr->bits_left_to_read = 28;
