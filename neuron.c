@@ -25,27 +25,6 @@ void neuronInit(neuron_t *n)
 		n->dendrites[i].pulse_time = LEARNING_WINDOW;
 		n->dendrites[i].alive_time = LEARNING_WINDOW;
 	}
-
-	n->dendrites[0].magnitude = 15000;
-	n->dendrites[1].magnitude = 8000;
-	n->dendrites[2].magnitude = 8000;
-	n->dendrites[3].magnitude = 15000;
-
-	n->dendrites[0].base_magnitude = 15000;
-	n->dendrites[1].base_magnitude = 8000;
-	n->dendrites[2].base_magnitude = 8000;
-	n->dendrites[3].base_magnitude = 15000;
-	
-	n->dendrite_ping_time[0] = 0;
-	n->dendrite_ping_time[1] = 0;
-	n->dendrite_ping_time[2] = 0;
-	n->dendrite_ping_time[3] = 0;
-	n->dendrite_ping_time[4] = 0;
-	n->dendrite_ping_time[5] = 0;
-	n->dendrite_ping_time[6] = 0;
-	n->dendrite_ping_time[7] = 0;
-	n->dendrite_ping_time[8] = 0;
-	n->dendrite_ping_time[9] = 0;
 }
 
 void checkDendrites(neuron_t * n)
