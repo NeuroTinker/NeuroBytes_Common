@@ -119,7 +119,8 @@ void dendriteSwitchOff(dendrite_t *dendrite)
 			dendrite->current_value += dendrite->magnitude;
 			break;
 		case INHIBITORY:
-			dendrite->current_value -= dendrite->magnitude;
+			if (dendrite->current_value > 2 * HYPERPOLARIZATION)
+				dendrite->current_value -= dendrite->magnitude;
 			break;
 	}
 }
