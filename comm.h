@@ -23,8 +23,12 @@
 #define NID_SELECTED_HEADER         0b1101
 #define DATA_HEADER                 0b1010
 
+#define DATA_SUBHEAD_POT            0b000
+#define DATA_SUBHEAD_TYPE           0b001
+#define DATA_SUBHEAD_STATE          0b010
+
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
-#define DATA_MESSAGE                0b10100000000000000000000000000000 // (NID) (KEEP ALIVE=0) (CHANNEL= NONE) (DATA) (no data)
+#define DATA_MESSAGE                0b10100000000000000000000000000000 // (NID) (KEEP ALIVE=0) (sub-header) (CHANNEL= NONE) (DATA) (no data)
 
 #define IDENTIFY_COMMAND            0b000001
 #define VERSION_COMMAND             0b000010

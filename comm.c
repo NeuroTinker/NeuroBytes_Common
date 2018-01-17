@@ -192,7 +192,7 @@ bool processVersionCommand(read_buffer_t * read_buffer_ptr)
     uint8_t device_id = (read_buffer_ptr->message >> 8) & 0b11111;
     uint8_t version = read_buffer_ptr->message & 0b11111111;
 
-    blink_flag = checkVersion(device_id, version) ? : 1;
+    blink_flag = checkVersion(device_id, version) ? : 1; // temp debug with blink message
     
     return false;
 }
@@ -389,11 +389,14 @@ void writeNID(void)
 {
     uint32_t value;
     if (nid_port_out == LPUART1){
-        value = write_buffer.nid[0].message & (0xFF << 24);
-        value >>= 24;
-        write_buffer.nid[0].message <<= 8;
-        write_buffer.write_count += 8; // lpuart writes 8 bits at a time instead of 1 bit
-        writeNIDByte(value);
+        // check to see if the UART bufer has overflowed
+        if ((USART_ISR(LPUART1) & USART_ISR_TCF) != 0) { // check if transmission empty (TXE). writing new byte resets interrupt
+            value = write_buffer.nid[0].message & (0xFF << 24);
+            value >>= 24;
+            write_buffer.nid[0].message <<= 8;
+            write_buffer.write_count += 8; // lpuart writes 8 bits at a time instead of 1 bit
+            writeNIDByte(value);
+        }
     } else{
         value = NEXT_BIT(write_buffer.nid[0]);
         write_buffer.nid[0].message <<= 1;
@@ -423,7 +426,7 @@ void readNID(void)
     read_buffer_t nid_read_buffer = { .message=0, .bits_left_to_read=4, .callback=processMessageHeader, .i=LPUART1_I};
     message <<= 8;
     message |= readNIDByte();
-    if (++i == 4){ // TODO need to flush if nid gets disconnected
+    if (++i == 4){
         /* Process message */
         do{
             while (nid_read_buffer.bits_left_to_read > 0){
