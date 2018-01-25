@@ -390,13 +390,13 @@ void writeNID(void)
     uint32_t value;
     if (nid_port_out == LPUART1){
         // check to see if the UART bufer has overflowed
-        if ((USART_ISR(LPUART1) & USART_ISR_TCF) != 0) { // check if transmission empty (TXE). writing new byte resets interrupt
+        //if ((USART_ISR(LPUART1) & USART_ISR_TCF) != 0) { // check if transmission empty (TXE). writing new byte resets interrupt
             value = write_buffer.nid[0].message & (0xFF << 24);
             value >>= 24;
             write_buffer.nid[0].message <<= 8;
             write_buffer.write_count += 8; // lpuart writes 8 bits at a time instead of 1 bit
             writeNIDByte(value);
-        }
+        //}
     } else{
         value = NEXT_BIT(write_buffer.nid[0]);
         write_buffer.nid[0].message <<= 1;
