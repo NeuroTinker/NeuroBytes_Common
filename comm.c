@@ -176,6 +176,9 @@ bool processGlobalCommand(read_buffer_t * read_buffer_ptr)
             read_buffer_ptr->bits_left_to_read = 13; // read 5-bit device id + 8-bit version
             read_buffer_ptr->callback = processVersionCommand;
             return true;
+        case PAUSE_COMMAND:
+            pause_flag ^= 0b1;
+            return false;
         default:
             break;
     }

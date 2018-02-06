@@ -32,6 +32,7 @@
 
 #define IDENTIFY_COMMAND            0b000001
 #define VERSION_COMMAND             0b000010
+#define PAUSE_COMMAND               0b000011
 
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
@@ -136,6 +137,7 @@ typedef struct read_buffer_t{
 extern uint8_t nid_i;
 
 // flags for main()
+extern volatile uint8_t pause_flag;
 extern volatile uint8_t blink_flag;
 extern volatile uint8_t comms_flag;
 extern volatile uint16_t comms_data;
