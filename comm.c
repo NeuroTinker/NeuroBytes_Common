@@ -8,6 +8,7 @@ read_buffer_t read_buffer[NUM_INPUTS] = {
 
 volatile uint8_t comms_flag = 0;
 volatile uint16_t comms_data = 0;
+volatile uint8_t pause_flag = 0;
 volatile uint8_t blink_flag = 0;
 volatile uint32_t nid_ping_time = 0;
 volatile uint16_t nid_pin = 0;
