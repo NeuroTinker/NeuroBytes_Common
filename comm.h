@@ -30,6 +30,7 @@
 // Message templates for making NID Pings and Data-to-NID messages
 #define NID_PING_MESSAGE            0b11100000000000000000000000000000
 #define DATA_MESSAGE                0b10100000000000000000000000000000 
+#define DATA_TYPE_MESSAGE           0b10100100000000000000000000000000
 
 // Global commands
 #define IDENTIFY_COMMAND            0b000001
