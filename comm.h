@@ -53,8 +53,9 @@
 /*
     This and comm.c define all communication protocol using the NeuroBytes protocol specifiction
 
-    All packets are between 4 and 32 bits and length and begin with 1-bit high
-    and a 3-bit message header.
+    All packets are between 4 and 32 bits in length and begin with 1-bit high
+    and a 3-bit message header:
+
     [1-bit high] [3-bit header]
 
     The message headers are:
@@ -72,14 +73,14 @@
     1. Network Interface Device (NID) broadcasting to all neurons in the network. 
 
         Messages are sent by NID and received by all devices on the network.
-        Global Sommands are processed by every device on the network.
+        Global Commands are processed by every device on the network.
         Selected Commands are processed only by the device with the channel specified by the message.
 
         Included message headers:
         0b001 - Blink
         0b100 - NID Global Command - Send a command to the entire network
         0b101 - NID Selected Command - Send a command to a previously selected device
-        0b110 - NID Ping - Propogate ping to update NID route
+        0b110 - NID Ping - Propogate ping in order to update NID route
 
         ####### NID Global Command ########
 
@@ -134,7 +135,7 @@
         101                 [NID Selected Command Header]
         100                 [Channel 4]
         1                   [Change Parameter]
-        0010                [Dendrite 1]
+        0010                [Dendrite 1]            *Parameter IDs can be found in main.c for each board (NOT FINAL)
         0000001000000000    [Change to 256]
         ________________
         = 0b1101100100100000001000000000
