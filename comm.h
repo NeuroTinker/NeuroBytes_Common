@@ -101,10 +101,13 @@
 
         Example NID Global Command:
 
+        Identify new neuron on channel 2.
         1           [1-bit high]
         100         [NID Global Command Header]
         000001      [Identify Command]
         010         [Channel 2]
+        _______
+        = 0b1100000001010
 
         ######## NID Selected Command ########
 
@@ -196,9 +199,20 @@
         At this time, board-specific parameters (for Parameter ID) have not been fully assigned.
         But some values can be found in their respective firmware repos in main.c
 
-        Example:
+        Example Data Message:
+
         Data message from an interneuron on channel 3 sending its membrane potential:
         0b[1][010][000][011][0][0000][0000001101011100]
+
+        Motor neuron on channel 1 sending dendrite 1 value of 2048
+        1                   [1-bit High]
+        010                 [Data Header]
+        100                 [board-specific parameter]
+        001                 [channel 1]
+        0                   [fire flag 0]
+        0100                [Dendrite 1 Parameter ID]   *see motor neuron repo for Parameter IDS (NOT FINAL)
+        0000100000000000    [dendrite 1 = 2048]
+
 
 
     3. Upstream neurons sending pulses to downstream neurons (axon -> dendrite).
