@@ -36,6 +36,10 @@
 #define VERSION_COMMAND             0b000010
 #define PAUSE_COMMAND               0b000011
 
+// Special NID channels
+#define IDENTIFY_CLEAR              0
+#define IDENTIFY_STOP               7
+
 #define NID_PING_DATA_LENGTH        6
 #define CLOSER_PING_COUNT           3
 #define IDENTIFY_TIME       500 // 250 ms
