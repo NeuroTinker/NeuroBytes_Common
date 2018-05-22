@@ -13,7 +13,7 @@
 #define FIRE_LED_TIME           5
 #define FIRE_DELAY_TIME         10
 
-#define LEARNING_WINDOW         50
+#define LEARNING_WINDOW         100
 #define LEARNING_CHANGE         500
 #define MAX_WEIGHTING           18000
 
